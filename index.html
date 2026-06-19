@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Eyewear Assistant V3 | ผู้ช่วยเลือกแว่นด้วย AI</title>
+  <title>AI Eyewear Assistant V4 | AI Face Analysis Ready</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MVP Version 3.0</div>
-      <h1>ผู้ช่วยเลือกแว่นอ่านหนังสือ</h1>
+      <div class="badge">MVP Version 4.0</div>
+      <h1>ผู้ช่วยเลือกแว่นอ่านหนังสือด้วย AI</h1>
       <p>
-        ประเมินกำลังแว่น เลือกทรงให้เหมาะกับรูปหน้า และแนะนำสินค้าเบื้องต้นตามสไตล์กับงบประมาณ
+        ประเมินกำลังแว่น เลือกทรงตามรูปหน้า และเตรียมระบบสำหรับ AI วิเคราะห์ใบหน้าอัตโนมัติ
       </p>
       <div class="warning">
         ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ และการวิเคราะห์รูปหน้าเป็นการประเมินด้านสไตล์เบื้องต้นเท่านั้น
@@ -86,15 +86,24 @@
         <label class="sample large"><input type="radio" name="screenText" value="3"> วันนี้ฉันอ่านข้อความนี้ได้ชัดเจน</label>
       </div>
 
-      <h2>Step 2: เลือกทรงแว่นให้เหมาะกับรูปหน้า</h2>
+      <h2>Step 2: AI Face Analysis Ready</h2>
 
       <div class="question">
         <h3>อัปโหลดรูปหน้าตรง</h3>
-        <p class="hint">แนะนำ: ถ่ายหน้าตรง แสงชัด ไม่เอียงหน้า ไม่ใส่แว่น เพื่อช่วยให้เลือกทรงได้ง่ายขึ้น</p>
+        <p class="hint">แนะนำ: ถ่ายหน้าตรง แสงชัด ไม่เอียงหน้า ไม่ใส่แว่น</p>
         <input type="file" id="faceImage" accept="image/*" />
         <div class="preview-box hidden" id="previewBox">
           <img id="facePreview" alt="ตัวอย่างรูปหน้า" />
         </div>
+      </div>
+
+      <div class="question ai-panel">
+        <h3>โหมดวิเคราะห์รูปหน้า</h3>
+        <p class="hint">
+          ตอนนี้ระบบรองรับโหมด Manual และเตรียมโค้ดสำหรับ AI Vision แล้ว
+        </p>
+        <button type="button" class="ai-button" id="mockAiBtn">ทดลอง AI วิเคราะห์จากรูป</button>
+        <div class="ai-result hidden" id="aiResultBox"></div>
       </div>
 
       <div class="question">
@@ -143,10 +152,11 @@
     </section>
 
     <footer>
-      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V3</p>
+      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V4</p>
     </footer>
   </main>
 
+  <script src="config.example.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

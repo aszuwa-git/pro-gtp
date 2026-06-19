@@ -358,6 +358,8 @@ const resetBtn = document.getElementById("resetBtn");
 const faceImage = document.getElementById("faceImage");
 const previewBox = document.getElementById("previewBox");
 const facePreview = document.getElementById("facePreview");
+const mockAiBtn = document.getElementById("mockAiBtn");
+const aiResultBox = document.getElementById("aiResultBox");
 
 faceImage.addEventListener("change", () => {
   const file = faceImage.files && faceImage.files[0];
@@ -373,6 +375,61 @@ faceImage.addEventListener("change", () => {
   };
   reader.readAsDataURL(file);
 });
+
+mockAiBtn.addEventListener("click", async () => {
+  const file = faceImage.files && faceImage.files[0];
+  if (!file) {
+    aiResultBox.classList.remove("hidden");
+    aiResultBox.innerHTML = "กรุณาอัปโหลดรูปก่อนทดลองวิเคราะห์";
+    return;
+  }
+
+  aiResultBox.classList.remove("hidden");
+  aiResultBox.innerHTML = "กำลังทดลองวิเคราะห์รูปหน้า...";
+
+  const result = await analyzeFaceShapeMock(file);
+  setFaceShape(result.faceShape);
+
+  aiResultBox.innerHTML = `
+    <strong>ผลทดลอง AI:</strong> ${faceShapeMap[result.faceShape].label}<br>
+    <strong>ความมั่นใจ:</strong> ${result.confidence}%<br>
+    <span>${result.reason}</span><br>
+    <small>หมายเหตุ: ตอนนี้เป็นโหมดจำลอง เพื่อเตรียมเชื่อม AI Vision API ภายหลัง</small>
+  `;
+});
+
+async function analyzeFaceShapeMock(file) {
+  // Mock AI: ใช้ชื่อไฟล์/ขนาดไฟล์ช่วยสุ่มอย่างคงที่ เพื่อให้ทดสอบ Flow ได้
+  const keys = ["round", "square", "long", "oval", "heart", "diamond"];
+  const seed = (file.name.length + file.size) % keys.length;
+  return {
+    faceShape: keys[seed],
+    confidence: 72 + (file.size % 18),
+    reason: "ระบบจำลองเลือกจากภาพที่อัปโหลด เพื่อทดสอบ Flow การวิเคราะห์รูปหน้า"
+  };
+}
+
+// ตัวอย่างโครงสร้างสำหรับเชื่อม Gemini Vision จริงในอนาคต
+// ควรเรียกผ่าน Backend Proxy เพื่อไม่เปิดเผย API Key ในหน้าเว็บสาธารณะ
+async function analyzeFaceWithGeminiVision(base64Image) {
+  /*
+  const prompt = `
+  Analyze the face shape from this image for eyewear style recommendation only.
+  Return JSON only:
+  {
+    "faceShape": "round|square|long|oval|heart|diamond",
+    "confidence": 0-100,
+    "reason": "short Thai explanation"
+  }
+  `;
+  */
+  throw new Error("Gemini Vision integration is not enabled yet. Use Backend Proxy for production.");
+}
+
+function setFaceShape(faceShapeKey) {
+  const input = form.querySelector(`input[name="faceShape"][value="${faceShapeKey}"]`);
+  if (input) input.checked = true;
+}
 
 function getCheckedRiskItems() {
   return Array.from(document.querySelectorAll(".risk:checked")).map(item => item.value);
@@ -410,7 +467,7 @@ function renderStyleResult(faceShapeKey, stylePref, budget) {
   return `
     <div class="style-box">
       <h3>ผลวิเคราะห์สไตล์เบื้องต้น</h3>
-      <p>รูปหน้าที่เลือก: <strong>${face.label}</strong></p>
+      <p>รูปหน้าที่เลือก/วิเคราะห์: <strong>${face.label}</strong></p>
       <p>สไตล์ที่ชอบ: <strong>${styleMap[stylePref] || "-"}</strong></p>
       <p>งบประมาณ: <strong>${budgetMap[budget] || "-"}</strong></p>
       <p><strong>ทรงแว่นที่เหมาะ:</strong></p>
@@ -518,6 +575,8 @@ resetBtn.addEventListener("click", () => {
   document.querySelectorAll(".risk").forEach(item => item.checked = false);
   resultCard.classList.add("hidden");
   previewBox.classList.add("hidden");
+  aiResultBox.classList.add("hidden");
   facePreview.src = "";
+  aiResultBox.innerHTML = "";
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
