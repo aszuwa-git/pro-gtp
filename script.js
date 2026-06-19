@@ -335,19 +335,8 @@ const faceShapeMap = {
   diamond: { label: "หน้าเพชร", recommend: ["Cat-eye", "วงรี", "ครึ่งกรอบ", "กรอบที่เน้นช่วงคิ้ว"], avoid: ["กรอบแคบมาก", "กรอบเล็กเกินไป"] }
 };
 
-const styleMap = {
-  classic: "สุภาพ / คลาสสิก",
-  casual: "ใส่ง่าย / ใช้ทุกวัน",
-  modern: "ทันสมัย",
-  lightweight: "เบา / สบาย"
-};
-
-const budgetMap = {
-  low: "ต่ำกว่า 150 บาท",
-  mid: "150-299 บาท",
-  high: "300 บาทขึ้นไป",
-  any: "ไม่จำกัด"
-};
+const styleMap = { classic: "สุภาพ / คลาสสิก", casual: "ใส่ง่าย / ใช้ทุกวัน", modern: "ทันสมัย", lightweight: "เบา / สบาย" };
+const budgetMap = { low: "ต่ำกว่า 150 บาท", mid: "150-299 บาท", high: "300 บาทขึ้นไป", any: "ไม่จำกัด" };
 
 const form = document.getElementById("quizForm");
 const resultCard = document.getElementById("resultCard");
@@ -358,8 +347,20 @@ const resetBtn = document.getElementById("resetBtn");
 const faceImage = document.getElementById("faceImage");
 const previewBox = document.getElementById("previewBox");
 const facePreview = document.getElementById("facePreview");
-const mockAiBtn = document.getElementById("mockAiBtn");
+const aiAnalyzeBtn = document.getElementById("aiAnalyzeBtn");
 const aiResultBox = document.getElementById("aiResultBox");
+const backendStatus = document.getElementById("backendStatus");
+
+const appsScriptUrl = window.AI_CONFIG?.appsScriptUrl || "";
+const useBackend = Boolean(appsScriptUrl);
+
+if (useBackend) {
+  backendStatus.textContent = "พร้อมเชื่อมต่อ AI Backend แล้ว";
+  backendStatus.classList.add("ready");
+} else {
+  backendStatus.textContent = "ยังไม่ได้ตั้งค่า Backend: ระบบจะใช้ Mock AI สำหรับทดสอบ";
+  backendStatus.classList.add("mock");
+}
 
 faceImage.addEventListener("change", () => {
   const file = faceImage.files && faceImage.files[0];
@@ -376,54 +377,61 @@ faceImage.addEventListener("change", () => {
   reader.readAsDataURL(file);
 });
 
-mockAiBtn.addEventListener("click", async () => {
+aiAnalyzeBtn.addEventListener("click", async () => {
   const file = faceImage.files && faceImage.files[0];
   if (!file) {
     aiResultBox.classList.remove("hidden");
-    aiResultBox.innerHTML = "กรุณาอัปโหลดรูปก่อนทดลองวิเคราะห์";
+    aiResultBox.innerHTML = "กรุณาอัปโหลดรูปก่อนวิเคราะห์";
     return;
   }
 
   aiResultBox.classList.remove("hidden");
-  aiResultBox.innerHTML = "กำลังทดลองวิเคราะห์รูปหน้า...";
+  aiResultBox.innerHTML = "กำลังวิเคราะห์รูปหน้า...";
 
-  const result = await analyzeFaceShapeMock(file);
-  setFaceShape(result.faceShape);
+  try {
+    const base64 = await fileToBase64Only(file);
+    const result = useBackend
+      ? await analyzeFaceWithBackend(base64, file.type)
+      : await analyzeFaceShapeMock(file);
 
-  aiResultBox.innerHTML = `
-    <strong>ผลทดลอง AI:</strong> ${faceShapeMap[result.faceShape].label}<br>
-    <strong>ความมั่นใจ:</strong> ${result.confidence}%<br>
-    <span>${result.reason}</span><br>
-    <small>หมายเหตุ: ตอนนี้เป็นโหมดจำลอง เพื่อเตรียมเชื่อม AI Vision API ภายหลัง</small>
-  `;
+    if (!faceShapeMap[result.faceShape]) throw new Error("AI ส่งค่ารูปหน้าที่ระบบไม่รองรับ");
+    setFaceShape(result.faceShape);
+
+    aiResultBox.innerHTML = `
+      <strong>ผล AI:</strong> ${faceShapeMap[result.faceShape].label}<br>
+      <strong>ความมั่นใจ:</strong> ${result.confidence}%<br>
+      <span>${result.reason || "วิเคราะห์จากภาพที่อัปโหลด"}</span><br>
+      <small>${useBackend ? "วิเคราะห์ผ่าน Backend" : "โหมดจำลองสำหรับทดสอบ"}</small>
+    `;
+  } catch (error) {
+    aiResultBox.innerHTML = `<strong>เกิดข้อผิดพลาด:</strong> ${error.message}<br><small>คุณยังสามารถเลือกรูปหน้าเองและใช้งานระบบต่อได้</small>`;
+  }
 });
 
-async function analyzeFaceShapeMock(file) {
-  // Mock AI: ใช้ชื่อไฟล์/ขนาดไฟล์ช่วยสุ่มอย่างคงที่ เพื่อให้ทดสอบ Flow ได้
-  const keys = ["round", "square", "long", "oval", "heart", "diamond"];
-  const seed = (file.name.length + file.size) % keys.length;
-  return {
-    faceShape: keys[seed],
-    confidence: 72 + (file.size % 18),
-    reason: "ระบบจำลองเลือกจากภาพที่อัปโหลด เพื่อทดสอบ Flow การวิเคราะห์รูปหน้า"
-  };
+function fileToBase64Only(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
-// ตัวอย่างโครงสร้างสำหรับเชื่อม Gemini Vision จริงในอนาคต
-// ควรเรียกผ่าน Backend Proxy เพื่อไม่เปิดเผย API Key ในหน้าเว็บสาธารณะ
-async function analyzeFaceWithGeminiVision(base64Image) {
-  /*
-  const prompt = `
-  Analyze the face shape from this image for eyewear style recommendation only.
-  Return JSON only:
-  {
-    "faceShape": "round|square|long|oval|heart|diamond",
-    "confidence": 0-100,
-    "reason": "short Thai explanation"
-  }
-  `;
-  */
-  throw new Error("Gemini Vision integration is not enabled yet. Use Backend Proxy for production.");
+async function analyzeFaceWithBackend(base64Image, mimeType) {
+  const response = await fetch(appsScriptUrl, {
+    method: "POST",
+    body: JSON.stringify({ action: "analyzeFaceShape", imageBase64: base64Image, mimeType })
+  });
+  if (!response.ok) throw new Error("Backend ตอบกลับไม่สำเร็จ");
+  const data = await response.json();
+  if (!data.ok) throw new Error(data.error || "วิเคราะห์ไม่สำเร็จ");
+  return data.result;
+}
+
+async function analyzeFaceShapeMock(file) {
+  const keys = ["round", "square", "long", "oval", "heart", "diamond"];
+  const seed = (file.name.length + file.size) % keys.length;
+  return { faceShape: keys[seed], confidence: 72 + (file.size % 18), reason: "ระบบจำลองเลือกจากภาพที่อัปโหลด เพื่อทดสอบ Flow ก่อนเชื่อม AI จริง" };
 }
 
 function setFaceShape(faceShapeKey) {
@@ -475,8 +483,7 @@ function renderStyleResult(faceShapeKey, stylePref, budget) {
       <p><strong>ควรหลีกเลี่ยง:</strong></p>
       <ul class="recommend-list">${face.avoid.map(item => `<li>✕ ${item}</li>`).join("")}</ul>
       <p><strong>หมายเหตุ:</strong> เป็นการแนะนำด้านสไตล์เบื้องต้น ผลลัพธ์อาจคลาดเคลื่อนตามมุมกล้อง แสง และความชอบส่วนบุคคล</p>
-    </div>
-  `;
+    </div>`;
 }
 
 function scoreProduct(product, strength, faceShapeKey, stylePref, budget) {
@@ -495,9 +502,7 @@ function renderProducts(strength, faceShapeKey, stylePref, budget) {
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 6);
 
-  if (ranked.length === 0) {
-    return "<p>ยังไม่มีสินค้า demo ที่ตรงกับเงื่อนไข ให้เพิ่มข้อมูลในไฟล์ script.js หรือ data/products.json</p>";
-  }
+  if (ranked.length === 0) return "<p>ยังไม่มีสินค้า demo ที่ตรงกับเงื่อนไข ให้เพิ่มข้อมูลในไฟล์ script.js หรือ data/products.json</p>";
 
   return `
     <h3>สินค้าแนะนำเบื้องต้น</h3>
@@ -514,25 +519,15 @@ function renderProducts(strength, faceShapeKey, stylePref, budget) {
           <p>งบ: ${product.priceRange}</p>
           <p>${product.faceMatch.map(key => `<span class="tag">${faceShapeMap[key]?.label || key}</span>`).join("")}</p>
           <a href="${product.link}" target="_blank" rel="noopener">ดูสินค้า</a>
-        </div>
-      `).join("")}
-    </div>
-  `;
+        </div>`).join("")}
+    </div>`;
 }
 
 form.addEventListener("submit", event => {
   event.preventDefault();
   const risks = getCheckedRiskItems();
-
   if (risks.length > 0) {
-    resultContent.innerHTML = `
-      <div class="result-box danger">
-        <h3>ระบบไม่แนะนำให้ซื้อแว่นจากการประเมินนี้ทันที</h3>
-        <p>คุณเลือกอาการที่ควรตรวจสายตาก่อน ได้แก่:</p>
-        <ul>${risks.map(item => `<li>${item}</li>`).join("")}</ul>
-        <p>แนะนำให้ตรวจสายตากับผู้เชี่ยวชาญก่อนเลือกซื้อแว่น เพื่อความปลอดภัย</p>
-      </div>
-    `;
+    resultContent.innerHTML = `<div class="result-box danger"><h3>ระบบไม่แนะนำให้ซื้อแว่นจากการประเมินนี้ทันที</h3><p>คุณเลือกอาการที่ควรตรวจสายตาก่อน ได้แก่:</p><ul>${risks.map(item => `<li>${item}</li>`).join("")}</ul><p>แนะนำให้ตรวจสายตากับผู้เชี่ยวชาญก่อนเลือกซื้อแว่น เพื่อความปลอดภัย</p></div>`;
     styleResult.innerHTML = "";
     productList.innerHTML = "";
     resultCard.classList.remove("hidden");
@@ -540,29 +535,13 @@ form.addEventListener("submit", event => {
     return;
   }
 
-  const score =
-    getFormValue("age") +
-    getFormValue("phone") +
-    getFormValue("labelText") +
-    getFormValue("strain") +
-    getFormValue("distance") +
-    getFormValue("screenText");
-
+  const score = getFormValue("age") + getFormValue("phone") + getFormValue("labelText") + getFormValue("strain") + getFormValue("distance") + getFormValue("screenText");
   const result = calculateStrength(score);
   const faceShapeKey = getSelectedRadioValue("faceShape");
   const stylePref = getSelectedRadioValue("stylePref");
   const budget = getSelectedRadioValue("budget");
 
-  resultContent.innerHTML = `
-    <div class="result-box">
-      <p>คะแนนรวมของคุณ</p>
-      <div class="result-strength">${score} คะแนน</div>
-      <p>กำลังแว่นอ่านหนังสือที่แนะนำเบื้องต้น</p>
-      <div class="result-strength">${result.strength}</div>
-      <p>${result.message}</p>
-      <p><strong>หมายเหตุ:</strong> ผลลัพธ์นี้เป็นการประเมินเบื้องต้นสำหรับเลือกแว่นอ่านหนังสือสำเร็จรูป ไม่ใช่การตรวจวัดสายตาทางการแพทย์</p>
-    </div>
-  `;
+  resultContent.innerHTML = `<div class="result-box"><p>คะแนนรวมของคุณ</p><div class="result-strength">${score} คะแนน</div><p>กำลังแว่นอ่านหนังสือที่แนะนำเบื้องต้น</p><div class="result-strength">${result.strength}</div><p>${result.message}</p><p><strong>หมายเหตุ:</strong> ผลลัพธ์นี้เป็นการประเมินเบื้องต้นสำหรับเลือกแว่นอ่านหนังสือสำเร็จรูป ไม่ใช่การตรวจวัดสายตาทางการแพทย์</p></div>`;
 
   styleResult.innerHTML = renderStyleResult(faceShapeKey, stylePref, budget);
   productList.innerHTML = renderProducts(result.strength, faceShapeKey, stylePref, budget);
