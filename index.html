@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Eyewear Assistant V2 | ผู้ช่วยเลือกแว่นด้วย AI</title>
+  <title>AI Eyewear Assistant V3 | ผู้ช่วยเลือกแว่นด้วย AI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MVP Version 2.0</div>
+      <div class="badge">MVP Version 3.0</div>
       <h1>ผู้ช่วยเลือกแว่นอ่านหนังสือ</h1>
       <p>
-        ประเมินกำลังแว่นอ่านหนังสือเบื้องต้น พร้อมช่วยเลือกทรงแว่นให้เหมาะกับรูปหน้า
+        ประเมินกำลังแว่น เลือกทรงให้เหมาะกับรูปหน้า และแนะนำสินค้าเบื้องต้นตามสไตล์กับงบประมาณ
       </p>
       <div class="warning">
         ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ และการวิเคราะห์รูปหน้าเป็นการประเมินด้านสไตล์เบื้องต้นเท่านั้น
@@ -109,7 +109,29 @@
         </div>
       </div>
 
-      <button type="submit" class="primary">ดูผลประเมิน</button>
+      <h2>Step 3: ความชอบและงบประมาณ</h2>
+
+      <div class="question">
+        <h3>สไตล์ที่คุณชอบ</h3>
+        <div class="face-grid">
+          <label><input type="radio" name="stylePref" value="classic" required> สุภาพ / คลาสสิก</label>
+          <label><input type="radio" name="stylePref" value="casual"> ใส่ง่าย / ใช้ทุกวัน</label>
+          <label><input type="radio" name="stylePref" value="modern"> ทันสมัย</label>
+          <label><input type="radio" name="stylePref" value="lightweight"> เบา / สบาย</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>งบประมาณที่ต้องการ</h3>
+        <div class="face-grid">
+          <label><input type="radio" name="budget" value="low" required> ต่ำกว่า 150 บาท</label>
+          <label><input type="radio" name="budget" value="mid"> 150-299 บาท</label>
+          <label><input type="radio" name="budget" value="high"> 300 บาทขึ้นไป</label>
+          <label><input type="radio" name="budget" value="any"> ไม่จำกัด</label>
+        </div>
+      </div>
+
+      <button type="submit" class="primary">ดูผลประเมินและสินค้าแนะนำ</button>
       <button type="button" class="secondary" id="resetBtn">เริ่มใหม่</button>
     </form>
 
@@ -121,7 +143,7 @@
     </section>
 
     <footer>
-      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V2</p>
+      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V3</p>
     </footer>
   </main>
 
