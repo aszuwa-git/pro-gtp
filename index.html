@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Eyewear Assistant | ผู้ช่วยเลือกแว่นอ่านหนังสือ</title>
+  <title>AI Eyewear Assistant V2 | ผู้ช่วยเลือกแว่นด้วย AI</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MVP Version 1.0</div>
+      <div class="badge">MVP Version 2.0</div>
       <h1>ผู้ช่วยเลือกแว่นอ่านหนังสือ</h1>
       <p>
-        ประเมินกำลังแว่นอ่านหนังสือเบื้องต้นจากอายุและอาการ ใช้เวลาประมาณ 1 นาที
+        ประเมินกำลังแว่นอ่านหนังสือเบื้องต้น พร้อมช่วยเลือกทรงแว่นให้เหมาะกับรูปหน้า
       </p>
       <div class="warning">
-        ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ ใช้เพื่อช่วยเลือกแว่นอ่านหนังสือสำเร็จรูปเบื้องต้นเท่านั้น
+        ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ และการวิเคราะห์รูปหน้าเป็นการประเมินด้านสไตล์เบื้องต้นเท่านั้น
       </div>
     </section>
 
@@ -30,7 +30,7 @@
     </section>
 
     <form class="card" id="quizForm">
-      <h2>แบบทดสอบ 5 ข้อ</h2>
+      <h2>Step 1: แบบทดสอบกำลังแว่น</h2>
 
       <div class="question">
         <h3>1. อายุของคุณ</h3>
@@ -86,6 +86,29 @@
         <label class="sample large"><input type="radio" name="screenText" value="3"> วันนี้ฉันอ่านข้อความนี้ได้ชัดเจน</label>
       </div>
 
+      <h2>Step 2: เลือกทรงแว่นให้เหมาะกับรูปหน้า</h2>
+
+      <div class="question">
+        <h3>อัปโหลดรูปหน้าตรง</h3>
+        <p class="hint">แนะนำ: ถ่ายหน้าตรง แสงชัด ไม่เอียงหน้า ไม่ใส่แว่น เพื่อช่วยให้เลือกทรงได้ง่ายขึ้น</p>
+        <input type="file" id="faceImage" accept="image/*" />
+        <div class="preview-box hidden" id="previewBox">
+          <img id="facePreview" alt="ตัวอย่างรูปหน้า" />
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>รูปหน้าของคุณใกล้เคียงแบบใดมากที่สุด?</h3>
+        <div class="face-grid">
+          <label><input type="radio" name="faceShape" value="round" required> หน้ากลม</label>
+          <label><input type="radio" name="faceShape" value="square"> หน้าเหลี่ยม</label>
+          <label><input type="radio" name="faceShape" value="long"> หน้ายาว</label>
+          <label><input type="radio" name="faceShape" value="oval"> หน้ารูปไข่</label>
+          <label><input type="radio" name="faceShape" value="heart"> หน้าหัวใจ</label>
+          <label><input type="radio" name="faceShape" value="diamond"> หน้าเพชร</label>
+        </div>
+      </div>
+
       <button type="submit" class="primary">ดูผลประเมิน</button>
       <button type="button" class="secondary" id="resetBtn">เริ่มใหม่</button>
     </form>
@@ -93,11 +116,12 @@
     <section class="card result hidden" id="resultCard">
       <h2>ผลประเมินเบื้องต้น</h2>
       <div id="resultContent"></div>
+      <div id="styleResult"></div>
       <div id="productList"></div>
     </section>
 
     <footer>
-      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant</p>
+      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V2</p>
     </footer>
   </main>
 

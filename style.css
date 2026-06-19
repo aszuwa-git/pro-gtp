@@ -10,7 +10,7 @@ body {
 }
 
 .app {
-  width: min(920px, 100%);
+  width: min(940px, 100%);
   margin: 0 auto;
   padding: 20px;
 }
@@ -41,7 +41,7 @@ body {
 .hero p {
   font-size: 17px;
   line-height: 1.65;
-  max-width: 720px;
+  max-width: 760px;
 }
 
 .warning {
@@ -79,6 +79,11 @@ body {
   margin-bottom: 12px;
 }
 
+.hint {
+  color: #6b7280;
+  line-height: 1.55;
+}
+
 label {
   display: block;
   padding: 10px 12px;
@@ -91,6 +96,14 @@ label {
 
 input[type="radio"], input[type="checkbox"] {
   margin-right: 8px;
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px dashed #9ca3af;
+  border-radius: 14px;
+  background: #f9fafb;
 }
 
 select {
@@ -110,6 +123,31 @@ select {
 .small { font-size: 15px; }
 .medium { font-size: 19px; }
 .large { font-size: 24px; }
+
+.face-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.face-grid label {
+  margin: 0;
+}
+
+.preview-box {
+  margin-top: 14px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.preview-box img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
 
 button {
   width: 100%;
@@ -144,6 +182,14 @@ button {
   margin: 14px 0;
 }
 
+.style-box {
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 18px;
+  padding: 18px;
+  margin: 14px 0;
+}
+
 .result-strength {
   font-size: 34px;
   font-weight: 800;
@@ -154,6 +200,11 @@ button {
   background: #fef2f2;
   border-color: #fecaca;
   color: #991b1b;
+}
+
+.recommend-list {
+  margin: 10px 0 0;
+  padding-left: 20px;
 }
 
 .product-grid {
@@ -180,6 +231,16 @@ button {
   color: #2563eb;
   font-weight: 700;
   text-decoration: none;
+}
+
+.tag {
+  display: inline-block;
+  background: #eef2ff;
+  color: #3730a3;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 13px;
+  margin: 3px 4px 3px 0;
 }
 
 footer {
