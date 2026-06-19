@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Eyewear Assistant | ผู้ช่วยเลือกแว่นอ่านหนังสือ</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div class="badge">MVP Version 1.0</div>
+      <h1>ผู้ช่วยเลือกแว่นอ่านหนังสือ</h1>
+      <p>
+        ประเมินกำลังแว่นอ่านหนังสือเบื้องต้นจากอายุและอาการ ใช้เวลาประมาณ 1 นาที
+      </p>
+      <div class="warning">
+        ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ ใช้เพื่อช่วยเลือกแว่นอ่านหนังสือสำเร็จรูปเบื้องต้นเท่านั้น
+      </div>
+    </section>
+
+    <section class="card" id="safetyCard">
+      <h2>ก่อนเริ่มทดสอบ</h2>
+      <p>หากคุณมีอาการต่อไปนี้ ระบบจะแนะนำให้ตรวจสายตากับผู้เชี่ยวชาญก่อน</p>
+      <label><input type="checkbox" class="risk" value="ตาพร่าหรือมองไม่ชัดข้างเดียว"> ตาพร่าหรือมองไม่ชัดข้างเดียว</label>
+      <label><input type="checkbox" class="risk" value="เห็นภาพซ้อน"> เห็นภาพซ้อน</label>
+      <label><input type="checkbox" class="risk" value="ปวดตารุนแรง"> ปวดตารุนแรง</label>
+      <label><input type="checkbox" class="risk" value="สายตาลดลงเร็วผิดปกติ"> สายตาลดลงเร็วผิดปกติ</label>
+      <label><input type="checkbox" class="risk" value="เคยมีโรคตาหรือผ่าตัดตา"> เคยมีโรคตาหรือผ่าตัดตา</label>
+    </section>
+
+    <form class="card" id="quizForm">
+      <h2>แบบทดสอบ 5 ข้อ</h2>
+
+      <div class="question">
+        <h3>1. อายุของคุณ</h3>
+        <select name="age" required>
+          <option value="">เลือกช่วงอายุ</option>
+          <option value="0">ต่ำกว่า 40 ปี</option>
+          <option value="2">40-44 ปี</option>
+          <option value="4">45-49 ปี</option>
+          <option value="6">50-54 ปี</option>
+          <option value="8">55-59 ปี</option>
+          <option value="10">60 ปีขึ้นไป</option>
+        </select>
+      </div>
+
+      <div class="question">
+        <h3>2. เวลาอ่านข้อความในโทรศัพท์</h3>
+        <label><input type="radio" name="phone" value="0" required> อ่านได้ปกติ</label>
+        <label><input type="radio" name="phone" value="1"> ต้องถือห่างเล็กน้อย</label>
+        <label><input type="radio" name="phone" value="2"> ต้องยืดแขนออกจึงจะชัด</label>
+        <label><input type="radio" name="phone" value="3"> ยืดแขนแล้วก็ยังไม่ชัด</label>
+      </div>
+
+      <div class="question">
+        <h3>3. อ่านฉลากยา เมนูอาหาร หรือตัวหนังสือเล็ก</h3>
+        <label><input type="radio" name="labelText" value="0" required> อ่านได้ปกติ</label>
+        <label><input type="radio" name="labelText" value="1"> อ่านได้แต่ต้องเพ่ง</label>
+        <label><input type="radio" name="labelText" value="2"> ต้องเพิ่มแสงจึงจะอ่านได้</label>
+        <label><input type="radio" name="labelText" value="3"> อ่านยากมาก</label>
+      </div>
+
+      <div class="question">
+        <h3>4. อ่านหนังสือหรือใช้มือถือระยะใกล้นาน ๆ</h3>
+        <label><input type="radio" name="strain" value="0" required> ไม่มีอาการ</label>
+        <label><input type="radio" name="strain" value="1"> เมื่อยตาเล็กน้อย</label>
+        <label><input type="radio" name="strain" value="2"> ปวดตาหรือปวดหัวบ่อย</label>
+        <label><input type="radio" name="strain" value="3"> ต้องพักสายตาบ่อยมาก</label>
+      </div>
+
+      <div class="question">
+        <h3>5. ระยะที่อ่านมือถือได้สบายที่สุด</h3>
+        <label><input type="radio" name="distance" value="0" required> 25-30 ซม.</label>
+        <label><input type="radio" name="distance" value="1"> 30-40 ซม.</label>
+        <label><input type="radio" name="distance" value="2"> 40-50 ซม.</label>
+        <label><input type="radio" name="distance" value="3"> มากกว่า 50 ซม.</label>
+      </div>
+
+      <div class="question reading-test">
+        <h3>ทดสอบอ่านข้อความบนหน้าจอ</h3>
+        <p>เลือกขนาดตัวอักษรที่เล็กที่สุดที่คุณอ่านได้สบาย</p>
+        <label class="sample tiny"><input type="radio" name="screenText" value="0" required> วันนี้ฉันอ่านข้อความนี้ได้ชัดเจน</label>
+        <label class="sample small"><input type="radio" name="screenText" value="1"> วันนี้ฉันอ่านข้อความนี้ได้ชัดเจน</label>
+        <label class="sample medium"><input type="radio" name="screenText" value="2"> วันนี้ฉันอ่านข้อความนี้ได้ชัดเจน</label>
+        <label class="sample large"><input type="radio" name="screenText" value="3"> วันนี้ฉันอ่านข้อความนี้ได้ชัดเจน</label>
+      </div>
+
+      <button type="submit" class="primary">ดูผลประเมิน</button>
+      <button type="button" class="secondary" id="resetBtn">เริ่มใหม่</button>
+    </form>
+
+    <section class="card result hidden" id="resultCard">
+      <h2>ผลประเมินเบื้องต้น</h2>
+      <div id="resultContent"></div>
+      <div id="productList"></div>
+    </section>
+
+    <footer>
+      <p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
