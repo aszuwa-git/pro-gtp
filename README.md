@@ -1,24 +1,28 @@
-# AI Eyewear Assistant V5
+# AI Eyewear Assistant V6.1
 
-ระบบผู้ช่วยเลือกแว่นอ่านหนังสือ พร้อม Backend สำหรับเชื่อม Gemini Vision ผ่าน Google Apps Script
+AI Personal Eyewear Stylist เวอร์ชันต้นแบบ
 
-## ความสามารถใน Version 5
+## ความสามารถใน V6.1
 
 - ประเมินกำลังแว่นอ่านหนังสือเบื้องต้น
-- เช็กอาการเสี่ยงที่ควรไปตรวจสายตาก่อน
+- คัดกรองอาการเสี่ยงที่ควรไปตรวจสายตาก่อน
 - อัปโหลดรูปหน้าตรงและ Preview รูป
-- วิเคราะห์รูปหน้าด้วย AI ผ่าน Backend
-- ถ้ายังไม่ได้ตั้งค่า Backend จะใช้ Mock AI
-- เลือกรูปหน้าเองได้
-- แนะนำทรงแว่นตามรูปหน้า
-- เลือกสไตล์และงบประมาณ
-- Product Recommendation Engine
-- Product Database V1 จำนวน 20 รายการ
+- วิเคราะห์รูปหน้าผ่าน Gemini Backend หรือ Mock AI
+- เพิ่ม Personal Profile:
+  - เพศ
+  - สีผิว
+  - การใช้งานหลัก
+  - ขนาดกรอบที่ชอบ
+- เพิ่ม AI Stylist Rules Engine V1
+- สร้าง AI Stylist Report
+- แนะนำสีกรอบ วัสดุ ทรงแว่น และสิ่งที่ควรหลีกเลี่ยง
+- Product Recommendation Engine ปรับคะแนนเพิ่มจากสีผิว การใช้งาน และขนาดกรอบ
+- Product Database 20 SKU
 
 ## โครงสร้างไฟล์
 
 ```text
-ai-eyewear-assistant-v5/
+ai-eyewear-assistant-v6-1/
 ├── index.html
 ├── style.css
 ├── script.js
@@ -30,23 +34,20 @@ ai-eyewear-assistant-v5/
     └── Code.gs
 ```
 
-## ขั้นตอนติดตั้ง Google Apps Script Backend
+## วิธีใช้งาน
 
-1. ไปที่ Google Apps Script
+เปิด `index.html` ได้ทันที หรืออัปโหลดขึ้น GitHub Pages
+
+## ตั้งค่า Gemini Backend
+
+1. เปิด Google Apps Script
 2. สร้าง Project ใหม่
-3. คัดลอกโค้ดจาก `apps-script/Code.gs` ไปวาง
-4. ไปที่ Project Settings
-5. Script Properties
-6. เพิ่ม Property:
-   - Name: `GEMINI_API_KEY`
-   - Value: API Key ของ Gemini
-7. กด Deploy
-8. เลือก New deployment
-9. Type: Web app
-10. Execute as: Me
-11. Who has access: Anyone
-12. Copy Web App URL
-13. นำ URL ไปใส่ใน `config.js`
+3. วางโค้ดจาก `apps-script/Code.gs`
+4. ไปที่ Project Settings > Script Properties
+5. เพิ่ม `GEMINI_API_KEY`
+6. Deploy เป็น Web App
+7. Copy Web App URL
+8. นำ URL ไปใส่ใน `config.js`
 
 ```js
 window.AI_CONFIG = {
@@ -55,9 +56,8 @@ window.AI_CONFIG = {
 };
 ```
 
-## หมายเหตุสำคัญ
+## หมายเหตุ
 
-- อย่าใส่ Gemini API Key ลงใน `script.js` หรือ `config.js`
-- API Key ต้องอยู่ใน Google Apps Script Script Properties เท่านั้น
 - ระบบนี้ไม่ใช่เครื่องมือตรวจวัดสายตาทางการแพทย์
-- การวิเคราะห์รูปหน้าเป็นการแนะนำด้านสไตล์ ไม่ใช่การยืนยันตัวตนหรือวิเคราะห์ชีวมิติ
+- AI Stylist Report เป็นคำแนะนำด้านสไตล์เบื้องต้น
+- ห้ามใส่ Gemini API Key ในไฟล์ frontend เช่น `script.js` หรือ `config.js`

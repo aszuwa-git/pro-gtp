@@ -3,25 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Eyewear Assistant V5 | Gemini Backend Ready</title>
+  <title>AI Eyewear Assistant V6.1 | AI Stylist Engine</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="app">
     <section class="hero">
-      <div class="badge">MVP Version 5.0</div>
-      <h1>ผู้ช่วยเลือกแว่นอ่านหนังสือด้วย AI</h1>
-      <p>ประเมินกำลังแว่น เลือกทรงตามรูปหน้า และรองรับการเชื่อม Gemini Vision ผ่าน Google Apps Script Backend</p>
-      <div class="warning">ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ และการวิเคราะห์รูปหน้าเป็นการประเมินด้านสไตล์เบื้องต้นเท่านั้น</div>
+      <div class="badge">MVP Version 6.1</div>
+      <h1>AI Personal Eyewear Stylist</h1>
+      <p>ประเมินกำลังแว่น วิเคราะห์รูปหน้า และสร้าง AI Stylist Report เพื่อช่วยเลือกแว่นที่เหมาะกับคุณ</p>
+      <div class="warning">ระบบนี้ไม่ใช่การตรวจวัดสายตาทางการแพทย์ และการวิเคราะห์รูปหน้า/สไตล์เป็นการประเมินเบื้องต้นเท่านั้น</div>
     </section>
 
     <section class="card" id="setupCard">
       <h2>สถานะการเชื่อมต่อ AI</h2>
-      <p class="hint">ใส่ Web App URL จาก Google Apps Script ในไฟล์ <code>config.js</code> เพื่อเปิดใช้ AI จริง</p>
+      <p class="hint">ใส่ Web App URL จาก Google Apps Script ในไฟล์ <code>config.js</code> เพื่อเปิดใช้ Gemini Vision จริง</p>
       <div class="status" id="backendStatus">กำลังตรวจสอบ...</div>
     </section>
 
-    <section class="card" id="safetyCard">
+    <section class="card">
       <h2>ก่อนเริ่มทดสอบ</h2>
       <p>หากคุณมีอาการต่อไปนี้ ระบบจะแนะนำให้ตรวจสายตากับผู้เชี่ยวชาญก่อน</p>
       <label><input type="checkbox" class="risk" value="ตาพร่าหรือมองไม่ชัดข้างเดียว"> ตาพร่าหรือมองไม่ชัดข้างเดียว</label>
@@ -105,7 +105,7 @@
 
       <div class="question">
         <h3>รูปหน้าของคุณใกล้เคียงแบบใดมากที่สุด?</h3>
-        <div class="face-grid">
+        <div class="grid">
           <label><input type="radio" name="faceShape" value="round" required> หน้ากลม</label>
           <label><input type="radio" name="faceShape" value="square"> หน้าเหลี่ยม</label>
           <label><input type="radio" name="faceShape" value="long"> หน้ายาว</label>
@@ -115,20 +115,22 @@
         </div>
       </div>
 
-      <h2>Step 3: ความชอบและงบประมาณ</h2>
+      <h2>Step 3: ความชอบเบื้องต้น</h2>
+
       <div class="question">
         <h3>สไตล์ที่คุณชอบ</h3>
-        <div class="face-grid">
+        <div class="grid">
           <label><input type="radio" name="stylePref" value="classic" required> สุภาพ / คลาสสิก</label>
           <label><input type="radio" name="stylePref" value="casual"> ใส่ง่าย / ใช้ทุกวัน</label>
           <label><input type="radio" name="stylePref" value="modern"> ทันสมัย</label>
           <label><input type="radio" name="stylePref" value="lightweight"> เบา / สบาย</label>
+          <label><input type="radio" name="stylePref" value="vintage"> วินเทจ</label>
         </div>
       </div>
 
       <div class="question">
         <h3>งบประมาณที่ต้องการ</h3>
-        <div class="face-grid">
+        <div class="grid">
           <label><input type="radio" name="budget" value="low" required> ต่ำกว่า 150 บาท</label>
           <label><input type="radio" name="budget" value="mid"> 150-299 บาท</label>
           <label><input type="radio" name="budget" value="high"> 300 บาทขึ้นไป</label>
@@ -136,7 +138,46 @@
         </div>
       </div>
 
-      <button type="submit" class="primary">ดูผลประเมินและสินค้าแนะนำ</button>
+      <h2>Step 4: Personal Profile สำหรับ AI Stylist</h2>
+
+      <div class="question">
+        <h3>เพศ</h3>
+        <div class="grid">
+          <label><input type="radio" name="gender" value="male" required> ชาย</label>
+          <label><input type="radio" name="gender" value="female"> หญิง</label>
+          <label><input type="radio" name="gender" value="unspecified"> ไม่ระบุ</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>สีผิว</h3>
+        <div class="grid">
+          <label><input type="radio" name="skinTone" value="fair" required> ผิวขาว</label>
+          <label><input type="radio" name="skinTone" value="medium"> ผิวสองสี</label>
+          <label><input type="radio" name="skinTone" value="dark"> ผิวคล้ำ</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>การใช้งานหลัก</h3>
+        <div class="grid">
+          <label><input type="radio" name="usage" value="reading" required> อ่านหนังสือ</label>
+          <label><input type="radio" name="usage" value="phone"> ใช้มือถือ</label>
+          <label><input type="radio" name="usage" value="computer"> ทำงานหน้าคอมพิวเตอร์</label>
+          <label><input type="radio" name="usage" value="general"> ใช้งานทั่วไป</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <h3>ขนาดกรอบที่ชอบ</h3>
+        <div class="grid">
+          <label><input type="radio" name="frameSize" value="small" required> เล็ก</label>
+          <label><input type="radio" name="frameSize" value="medium"> กลาง</label>
+          <label><input type="radio" name="frameSize" value="large"> ใหญ่</label>
+        </div>
+      </div>
+
+      <button type="submit" class="primary">ดูผลประเมินและ AI Stylist Report</button>
       <button type="button" class="secondary" id="resetBtn">เริ่มใหม่</button>
     </form>
 
@@ -144,10 +185,11 @@
       <h2>ผลประเมินเบื้องต้น</h2>
       <div id="resultContent"></div>
       <div id="styleResult"></div>
+      <div id="stylistReport"></div>
       <div id="productList"></div>
     </section>
 
-    <footer><p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V5</p></footer>
+    <footer><p>Prototype สำหรับทดสอบตลาด | AI Eyewear Assistant V6.1</p></footer>
   </main>
 
   <script src="config.js"></script>
